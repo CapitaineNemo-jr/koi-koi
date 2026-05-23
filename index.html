@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ベースキャンプ - 旅のしおり</title>
+  <style>
+    /* --- 全体設定（リセットと共通スタイル） --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+    body {
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .app-container {
+      width: 100%;
+      max-width: 420px;
+      height: 100vh;
+      max-height: 850px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      overflow-y: auto;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .hidden {
+      display: none !important;
+    }
+
+    /* --- 1. ログイン画面のスタイル --- */
+    #login-screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 30px;
+      text-align: center;
+    }
+    .brand-logo {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #3b82f6;
+      margin-bottom: 10px;
+    }
+    .brand-subtitle {
+      color: #6b7280;
+      margin-bottom: 40px;
+      font-size: 0.9rem;
+    }
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: #4b5563;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 1rem;
+      background-color: #f9fafb;
+    }
+    .btn-primary {
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    /* --- 2. メイン画面（共通部）のスタイル --- */
+    #main-screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    header {
+      background-color: #3b82f6;
+      color: white;
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .group-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .group-name {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+    .member-count {
+      font-size: 0.85rem;
+      background: rgba(255,255,255,0.2);
+      padding: 4px 8px;
+      border-radius: 20px;
+    }
+    .main-content {
+      padding: 20px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #1f2937;
+    }
+
+    /* フォーム周りのスタイル */
+    .form-card {
+      background: #f3f4f6;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+    }
+    .form-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .form-card input {
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      width: 100%;
+    }
+    .btn-secondary {
+      background-color: #10b981;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+
+    /* --- 3. 【タブ1：しおり】のスタイル --- */
+    .timeline {
+      position: relative;
+      border-left: 2px solid #e5e7eb;
+      padding-left: 20px;
+      margin-left: 10px;
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 25px;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -27px;
+      top: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #3b82f6;
+      border: 2px solid white;
+    }
+    .time {
+      font-size: 0.85rem;
+      color: #3b82f6;
+      font-weight: bold;
+    }
+    .plan-card {
+      background: #f9fafb;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 5px;
+      border: 1px solid #f3f4f6;
+    }
+    .plan-title {
+      font-weight: 600;
+      color: #374151;
+    }
+    .plan-memo {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+    .plan-budget {
+      font-size: 0.85rem;
+      color: #10b981;
+      font-weight: 600;
+      margin-top: 6px;
+    }
+
+    /* --- 4. 【タブ2：行きたい候補】のスタイル --- */
+    .candidate-item {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .candidate-info h4 {
+      color: #1f2937;
+      margin-bottom: 2px;
+    }
+    .candidate-info p {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+    .vote-badge {
+      background-color: #fee2e2;
+      color: #ef4444;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* --- 5. 【タブ3：割り勘】のスタイル --- */
+    .warikan-card {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .warikan-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed #cascade;
+      font-size: 0.95rem;
+    }
+    .warikan-row:last-child {
+      border-bottom: none;
+    }
+    .settle-up-title {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #065f46;
+      margin-bottom: 10px;
+    }
+
+    /* --- 下部ナビゲーション --- */
+    .bottom-nav {
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-around;
+      padding: 14px;
+      background: #fff;
+    }
+    .nav-item {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      cursor: pointer;
+      text-align: center;
+      flex: 1;
+      transition: color 0.2s;
+    }
+    .nav-item.active {
+      color: #3b82f6;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- 画面1: ログイン画面 -->
+    <div id="login-screen">
+      <div class="brand-logo">TabiShiori</div>
+      <div class="brand-subtitle">みんなでつくる、旅の計画アプリ</div>
+      
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="input-group">
+          <label for="email">メールアドレス</label>
+          <input type="email" id="email" required value="demo@example.com">
+        </div>
+        <div class="input-group">
+          <label for="password">パスワード</label>
+          <input type="password" id="password" required value="password123">
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%;">ログインしてみる</button>
+      </form>
+    </div>
+
+    <!-- 画面2: メイン画面 -->
+    <div id="main-screen" class="hidden">
+      <header>
+        <div class="group-info">
+          <div class="group-name">卒業旅行in京都 ⛩️</div>
+          <div class="member-count">メンバー 6人</div>
+        </div>
+      </header>
+
+      <div class="main-content">
+        
+        <!-- 🗺️ タブ①：しおり画面 -->
+        <div id="tab-shiori" class="tab-content">
+          <!-- 予定入力フォーム -->
+          <div class="form-card">
+            <div class="form-row">
+              <input type="text" id="new-time" placeholder="時間 (例: 16:30)" style="flex: 1;">
+              <input type="text" id="new-title" placeholder="予定のタイトル" style="flex: 2;">
+            </div>
+            <div class="form-row">
+              <input type="text" id="new-memo" placeholder="メモや詳細（場所など）">
+            </div>
+            <div class="form-row">
+              <input type="number" id="new-budget" placeholder="予算（任意、数字のみ）">
+            </div>
+            <button type="button" class="btn-secondary" onclick="addPlan()">予定をタイムラインに追加</button>
+          </div>
+
+          <div class="section-title">1日目のタイムライン</div>
+          <div id="timeline-container" class="timeline">
+            <div class="timeline-item">
+              <div class="time">10:00</div>
+              <div class="plan-card">
+                <div class="plan-title">京都駅 集合</div>
+                <div class="plan-memo">中央口改札の近くのコインロッカー前に集まる！</div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="time">11:30</div>
+              <div class="plan-card">
+                <div class="plan-title">ランチ：手織り寿し</div>
+                <div class="plan-memo">予約済み。各自1,500円〜2,000円くらい。</div>
+                <div class="plan-budget">予算: ¥2,000 / 人</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 📌 タブ②：行きたい候補画面（初期状態は非表示） -->
+        <div id="tab-candidates" class="tab-content hidden">
+          <div class="section-title">みんなの行きたい候補</div>
+          
+          <div class="candidate-item">
+            <div class="candidate-info">
+              <h4>伏見稲荷大社</h4>
+              <p>千本鳥居で写真撮りたい！朝早めがいいかも</p>
+            </div>
+            <div class="vote-badge">❤️ 4票</div>
+          </div>
+
+          <div class="candidate-item">
+            <div class="candidate-info">
+              <h4>アラビカ京都 嵐山</h4>
+              <p>渡月橋みながらコーヒー飲めるところ☕️</p>
+            </div>
+            <div class="vote-badge">❤️ 5票</div>
+          </div>
+          <p style="text-align: center; color: #9ca3af; font-size: 0.85rem; margin-top: 20px;">※ ここにも追加フォームを作ると良さそうだね！</p>
+        </div>
+
+        <!-- 🪙 タブ③：割り勘画面（初期状態は非表示） -->
+        <div id="tab-warikan" class="tab-content hidden">
+          <div class="section-title">現在の立て替え状況</div>
+          
+          <div class="warikan-card">
+            <div class="settle-up-title">精算の自動計算（モック）</div>
+            <div class="warikan-row">
+              <span>Aさん ➔ Bさん</span>
+              <span style="font-weight: bold; color: #ef4444;">¥1,200 支払う</span>
+            </div>
+            <div class="warikan-row">
+              <span>Cさん ➔ Bさん</span>
+              <span style="font-weight: bold; color: #ef4444;">¥3,500 支払う</span>
+            </div>
+          </div>
+          
+          <div class="candidate-item">
+            <div class="candidate-info">
+              <h4>新幹線の切符代</h4>
+              <p>Bさんが一括で立て替え中</p>
+            </div>
+            <div style="font-weight: bold;">¥85,000</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 下部ナビゲーション（クリックで対応するIDを呼び出す） -->
+      <div class="bottom-nav">
+        <div id="nav-shiori" class="nav-item active" onclick="switchTab('shiori')">しおり</div>
+        <div id="nav-candidates" class="nav-item" onclick="switchTab('candidates')">行きたい候補</div>
+        <div id="nav-warikan" class="nav-item" onclick="switchTab('warikan')">割り勘</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- --- JavaScriptの処理 --- -->
+  <script>
+    // ログイン処理
+    function handleLogin(event) {
+      event.preventDefault();
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('main-screen').classList.remove('hidden');
+    }
+
+    // ✨ 今回のメイン：タブ切り替えの魔法
+    function switchTab(tabName) {
+      // 1. まず、すべてのタブコンテンツ（しおり、候補、割り勘）をいったん全員非表示（hidden）にする
+      const contents = document.querySelectorAll('.tab-content');
+      contents.forEach(content => content.classList.add('hidden'));
+
+      // 2. クリックされたタブ（例: tab-shiori）だけ、非表示クラスを取り除く
+      document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+      // 3. ナビゲーションの「青文字（active）」を全員いったん解除する
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => item.classList.remove('active'));
+
+      // 4. クリックされたナビゲーションの文字だけを青（active）にする
+      document.getElementById(`nav-${tabName}`).classList.add('active');
+    }
+
+    // 予定をタイムラインに追加する処理
+    function addPlan() {
+      const timeVal = document.getElementById('new-time').value.trim();
+      const titleVal = document.getElementById('new-title').value.trim();
+      const memoVal = document.getElementById('new-memo').value.trim();
+      const budgetVal = document.getElementById('new-budget').value.trim();
+
+      if (!timeVal || !titleVal) {
+        alert('「時間」と「予定のタイトル」は必ず入力してね！');
+        return;
+      }
+
+      const container = document.getElementById('timeline-container');
+      let budgetHTML = '';
+      if (budgetVal) {
+        const formattedBudget = Number(budgetVal).toLocaleString();
+        budgetHTML = `<div class="plan-budget">予算: ¥${formattedBudget}</div>`;
+      }
+
+      const newItem = document.createElement('div');
+      newItem.className = 'timeline-item';
+      newItem.innerHTML = `
+        <div class="time">${timeVal}</div>
+        <div class="plan-card">
+          <div class="plan-title">${titleVal}</div>
+          <div class="plan-memo">${memoVal}</div>
+          ${budgetHTML}
+        </div>
+      `;
+
+      container.appendChild(newItem);
+
+      // フォームリセット
+      document.getElementById('new-time').value = '';
+      document.getElementById('new-title').value = '';
+      document.getElementById('new-memo').value = '';
+      document.getElementById('new-budget').value = '';
+    }
+  </script>
+</body>
+</html>
