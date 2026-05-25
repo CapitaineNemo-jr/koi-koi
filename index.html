@@ -158,11 +158,10 @@
       font-size: 0.9rem;
     }
 
-    /* --- 【タブ1：しおり】日付ブロックとタイムライン --- */
+    /* --- 【タブ1：しおり】 --- */
     .day-block {
       margin-bottom: 30px;
     }
-    /* ✨ 追加：日付ヘッダーのスタイル */
     .day-header {
       font-size: 1rem;
       font-weight: bold;
@@ -232,14 +231,33 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
-    .vote-badge {
+    .candidate-info h4 {
+      color: #1f2937;
+      margin-bottom: 2px;
+    }
+    .candidate-info p {
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+    /* ✨ 追加：投票用インタラクティブボタンのスタイル */
+    .btn-vote {
       background-color: #fee2e2;
       color: #ef4444;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       font-weight: bold;
-      padding: 4px 10px;
+      padding: 8px 14px;
       border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.2s;
+    }
+    .btn-vote:hover {
+      background-color: #fecaca;
+    }
+    .btn-vote:active {
+      transform: scale(0.92); /* 押し心地を出すアニメーション */
     }
 
     /* --- 【タブ3：割り勘】 --- */
@@ -283,219 +301,10 @@
 
   <div class="app-container">
 
-    <!-- 画面1: ログイン画面 -->
     <div id="login-screen">
       <div class="brand-logo">TabiShiori</div>
       <div class="brand-subtitle">みんなでつくる、旅の計画アプリ</div>
       
       <form id="login-form" onsubmit="handleLogin(event)">
         <div class="input-group">
-          <label for="email">メールアドレス</label>
-          <input type="email" id="email" required value="demo@example.com">
-        </div>
-        <div class="input-group">
-          <label for="password">パスワード</label>
-          <input type="password" id="password" required value="password123">
-        </div>
-        <button type="submit" class="btn-primary" style="width: 100%;">ログインしてみる</button>
-      </form>
-    </div>
-
-    <!-- 画面2: メイン画面 -->
-    <div id="main-screen" class="hidden">
-      <header>
-        <div class="group-info">
-          <div class="group-name">卒業旅行in京都 ⛩️</div>
-          <div class="member-count">メンバー 6人</div>
-        </div>
-      </header>
-
-      <div class="main-content">
-        
-        <!-- 🗺️ タブ①：しおり画面 -->
-        <div id="tab-shiori" class="tab-content">
-          <!-- ✨ フォームの改善：日付セレクトと24時間inputの導入 -->
-          <div class="form-card">
-            <div class="form-row">
-              <select id="new-day" style="flex: 1.2;">
-                <option value="1">1日目</option>
-                <option value="2">2日目</option>
-                <option value="3">3日目</option>
-              </select>
-              <!-- type="time" にすることで、ブラウザ標準の綺麗な24時間入力UIになります -->
-              <input type="time" id="new-time" style="flex: 1.5;" required>
-              <input type="text" id="new-title" placeholder="予定のタイトル" style="flex: 2.5;" required>
-            </div>
-            <div class="form-row">
-              <input type="text" id="new-memo" placeholder="メモや詳細（場所など）">
-            </div>
-            <div class="form-row">
-              <input type="number" id="new-budget" placeholder="予算（数字のみ）">
-            </div>
-            <button type="button" class="btn-secondary" onclick="addPlan()">予定をタイムラインに追加</button>
-          </div>
-
-          <div class="section-title">旅のスケジュール</div>
-          
-          <!-- ✨ ここにJavaScriptから動的に「日付ブロック」が生成されます -->
-          <div id="timeline-container"></div>
-        </div>
-
-        <!-- 📌 タブ②：行きたい候補画面 -->
-        <div id="tab-candidates" class="tab-content hidden">
-          <div class="section-title">みんなの行きたい候補</div>
-          <div class="candidate-item">
-            <div class="candidate-info"><h4>伏見稲荷大社</h4><p>千本鳥居で写真撮りたい！</p></div>
-            <div class="vote-badge">❤️ 4票</div>
-          </div>
-        </div>
-
-        <!-- 🪙 タブ③：割り勘画面 -->
-        <div id="tab-warikan" class="tab-content hidden">
-          <div class="section-title">現在の立て替え状況</div>
-          <div class="warikan-card">
-            <div class="warikan-row"><span>Aさん ➔ Bさん</span><span style="color: #ef4444;">¥1,200 支払う</span></div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- 下部ナビゲーション -->
-      <div class="bottom-nav">
-        <div id="nav-shiori" class="nav-item active" onclick="switchTab('shiori')">しおり</div>
-        <div id="nav-candidates" class="nav-item" onclick="switchTab('candidates')">行きたい候補</div>
-        <div id="nav-warikan" class="nav-item" onclick="switchTab('warikan')">割り勘</div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- --- JavaScriptの処理 --- -->
-  <script>
-    // 💡 1. 予定データを保持する配列（初期データを仕込んでおく）
-    let plans = [
-      { day: "1", time: "10:00", title: "京都駅 集合", memo: "中央口改札の近くのコインロッカー前", budget: "" },
-      { day: "1", time: "11:30", title: "ランチ：手織り寿し", memo: "予約済み。各自2,000円くらい", budget: "2000" },
-      { day: "2", time: "09:00", title: "ホテル出発", memo: "チェックアウトを忘れないこと！", budget: "" }
-    ];
-
-    // 初回読み込み時に、初期データを画面に描画する
-    window.onload = function() {
-      renderPlans();
-    };
-
-    function handleLogin(event) {
-      event.preventDefault();
-      document.getElementById('login-screen').classList.add('hidden');
-      document.getElementById('main-screen').classList.remove('hidden');
-    }
-
-    function switchTab(tabName) {
-      const contents = document.querySelectorAll('.tab-content');
-      contents.forEach(content => content.classList.add('hidden'));
-      document.getElementById(`tab-${tabName}`).classList.remove('hidden');
-
-      const navItems = document.querySelectorAll('.nav-item');
-      navItems.forEach(item => item.classList.remove('active'));
-      document.getElementById(`nav-${tabName}`).classList.add('active');
-    }
-
-    // 💡 2. 新しい予定を「配列」に追加する処理
-    function addPlan() {
-      const dayVal = document.getElementById('new-day').value;
-      const timeVal = document.getElementById('new-time').value; // 例: "14:30"
-      const titleVal = document.getElementById('new-title').value.trim();
-      const memoVal = document.getElementById('new-memo').value.trim();
-      const budgetVal = document.getElementById('new-budget').value.trim();
-
-      if (!timeVal || !titleVal) {
-        alert('「時間」と「タイトル」を入力してね！');
-        return;
-      }
-
-      // オブジェクトにして配列にプッシュ
-      plans.push({
-        day: dayVal,
-        time: timeVal,
-        title: titleVal,
-        memo: memoVal,
-        budget: budgetVal
-      });
-
-      // 画面を描き直す（ソートと描画をまとめて実行）
-      renderPlans();
-
-      // フォームリセット
-      document.getElementById('new-time').value = '';
-      document.getElementById('new-title').value = '';
-      document.getElementById('new-memo').value = '';
-      document.getElementById('new-budget').value = '';
-    }
-
-    // 💡 3. 配列をソートして画面を綺麗に全描き直す、核心の関数
-    function renderPlans() {
-      // ① まず「日付」で並び替え、同じ日付なら「時間文字列」で昇順ソート
-      plans.sort((a, b) => {
-        if (a.day !== b.day) {
-          return Number(a.day) - Number(b.day);
-        }
-        // "10:00" と "09:00" のような24時間表記の文字列比較は、そのまま localeCompare で綺麗に並びます
-        return a.time.localeCompare(b.time);
-      });
-
-      // ② 表示エリアをいったん完全にクリアにする
-      const container = document.getElementById('timeline-container');
-      container.innerHTML = '';
-
-      let currentDay = null;
-      let currentTimelineNode = null;
-
-      // ③ ソート済みの配列をループして、日付ごとのHTMLブロックを組み立てる
-      plans.forEach(plan => {
-        // ループ中に「新しい日付」に突入したら、新しい日付用のヘッダーとタイムライン枠を作る
-        if (plan.day !== currentDay) {
-          currentDay = plan.day;
-
-          // 日付ブロックの親要素
-          const dayBlock = document.createElement('div');
-          dayBlock.className = 'day-block';
-
-          // 日付ヘッダー
-          const dayHeader = document.createElement('div');
-          dayHeader.className = 'day-header';
-          dayHeader.innerText = `📆 ${currentDay}日目`;
-          dayBlock.appendChild(dayHeader);
-
-          // その日付専用のタイムライン（縦線を持つ枠）
-          currentTimelineNode = document.createElement('div');
-          currentTimelineNode.className = 'timeline';
-          dayBlock.appendChild(currentTimelineNode);
-
-          container.appendChild(dayBlock);
-        }
-
-        // 予算の表示用HTML
-        let budgetHTML = '';
-        if (plan.budget) {
-          budgetHTML = `<div class="plan-budget">予算: ¥${Number(plan.budget).toLocaleString()}</div>`;
-        }
-
-        // 予定カードの生成
-        const item = document.createElement('div');
-        item.className = 'timeline-item';
-        item.innerHTML = `
-          <div class="time">${plan.time}</div>
-          <div class="plan-card">
-            <div class="plan-title">${plan.title}</div>
-            <div class="plan-memo">${plan.memo}</div>
-            ${budgetHTML}
-          </div>
-        `;
-
-        // 現在処理中の日付のタイムラインの中に突っ込む
-        currentTimelineNode.appendChild(item);
-      });
-    }
-  </script>
-</body>
-</html>
+          <label for="email
