@@ -19,18 +19,45 @@
       align-items: center;
       min-height: 100vh;
     }
+    
+    /* 📱 基本はスマホ向けのスタイル（モバイルファースト） */
     .app-container {
       width: 100%;
-      max-width: 420px;
       height: 100vh;
-      max-height: 850px;
       background-color: #ffffff;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      overflow-y: auto;
-      position: relative;
       display: flex;
       flex-direction: column;
+      position: relative;
     }
+    
+    /* 💻 画面幅が768px以上（パソコンやタブレット）になったら適用する魔法 */
+    @media (min-width: 768px) {
+      body {
+        padding: 20px 0;
+      }
+      .app-container {
+        max-width: 850px;       /* 横幅をパソコン用に広げる */
+        height: 850px;          /* 高さを程よく固定 */
+        max-height: 90vh;
+        border-radius: 16px;    /* 角を丸くしておしゃれに */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* 高級感のある影 */
+      }
+      /* ✨ パソコンの時だけ左右2カラムに割るための設定 */
+      .responsive-layout {
+        display: flex;
+        gap: 25px;
+        align-items: flex-start;
+      }
+      .layout-left {
+        flex: 1;                /* 左側のフォーム枠 */
+        position: sticky;
+        top: 0;
+      }
+      .layout-right {
+        flex: 1.3;              /* 右側のリスト枠を少し広めに */
+      }
+    }
+
     .hidden {
       display: none !important;
     }
@@ -43,6 +70,11 @@
       justify-content: center;
       padding: 40px 30px;
       text-align: center;
+    }
+    #login-screen form {
+      max-width: 340px;
+      width: 100%;
+      margin: 0 auto; /* パソコン画面でも中央にきゅっと収まるように */
     }
     .brand-logo {
       font-size: 2.5rem;
@@ -91,14 +123,12 @@
       display: flex;
       flex-direction: column;
       height: 100%;
+      overflow: hidden; /* 全体がガタガタ動かないように防衛 */
     }
     header {
       background-color: #3b82f6;
       color: white;
       padding: 20px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
     }
     .group-info {
       display: flex;
@@ -118,7 +148,7 @@
     .main-content {
       padding: 20px;
       flex: 1;
-      overflow-y: auto;
+      overflow-y: auto; /* コンテンツが増えたらここだけがスクロールする */
     }
     .section-title {
       font-size: 1.1rem;
@@ -145,6 +175,7 @@
       border-radius: 8px;
       font-size: 0.9rem;
       background-color: #fff;
+      width: 100%;
     }
     .btn-secondary {
       background-color: #10b981;
@@ -164,374 +195,4 @@
     }
     .day-header {
       font-size: 1rem;
-      font-weight: bold;
-      color: #3b82f6;
-      background-color: #eff6ff;
-      padding: 6px 12px;
-      border-radius: 6px;
-      margin-bottom: 15px;
-      display: inline-block;
-    }
-    .timeline {
-      position: relative;
-      border-left: 2px solid #e5e7eb;
-      padding-left: 20px;
-      margin-left: 10px;
-    }
-    .timeline-item {
-      position: relative;
-      margin-bottom: 20px;
-    }
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -27px;
-      top: 4px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: #3b82f6;
-      border: 2px solid white;
-    }
-    .time {
-      font-size: 0.85rem;
-      color: #3b82f6;
-      font-weight: bold;
-    }
-    .plan-card {
-      background: #f9fafb;
-      padding: 12px;
-      border-radius: 8px;
-      margin-top: 5px;
-      border: 1px solid #f3f4f6;
-    }
-    .plan-title {
-      font-weight: 600;
-      color: #374151;
-    }
-    .plan-memo {
-      font-size: 0.85rem;
-      color: #6b7280;
-      margin-top: 4px;
-    }
-    .plan-budget {
-      font-size: 0.85rem;
-      color: #10b981;
-      font-weight: 600;
-      margin-top: 6px;
-    }
-
-    /* --- 【タブ2：行きたい候補】 --- */
-    .candidate-item {
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    .candidate-info h4 {
-      color: #1f2937;
-      margin-bottom: 2px;
-    }
-    .candidate-info p {
-      font-size: 0.85rem;
-      color: #6b7280;
-    }
-    .btn-vote {
-      background-color: #fee2e2;
-      color: #ef4444;
-      font-size: 0.85rem;
-      font-weight: bold;
-      padding: 8px 14px;
-      border-radius: 20px;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.1s, background 0.2s;
-    }
-    .btn-vote:hover {
-      background-color: #fecaca;
-    }
-    .btn-vote:active {
-      transform: scale(0.92);
-    }
-
-    /* --- 【タブ3：割り勘】 --- */
-    .warikan-card {
-      background: #ecfdf5;
-      border: 1px solid #a7f3d0;
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 20px;
-    }
-    .warikan-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px dashed #e5e7eb; /* 🔧 #cascade から修正したよ！ */
-      font-size: 0.95rem;
-    }
-
-    /* --- 下部ナビゲーション --- */
-    .bottom-nav {
-      border-top: 1px solid #e5e7eb;
-      display: flex;
-      justify-content: space-around;
-      padding: 14px;
-      background: #fff;
-    }
-    .nav-item {
-      font-size: 0.8rem;
-      color: #9ca3af;
-      cursor: pointer;
-      text-align: center;
-      flex: 1;
-    }
-    .nav-item.active {
-      color: #3b82f6;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="app-container">
-
-    <div id="login-screen">
-      <div class="brand-logo">TabiShiori</div>
-      <div class="brand-subtitle">みんなでつくる、旅の計画アプリ</div>
-      
-      <form id="login-form" onsubmit="handleLogin(event)">
-        <div class="input-group">
-          <label for="email">メールアドレス</label>
-          <input type="email" id="email" required value="demo@example.com">
-        </div>
-        <div class="input-group">
-          <label for="password">パスワード</label>
-          <input type="password" id="password" required value="password123">
-        </div>
-        <button type="submit" class="btn-primary" style="width: 100%;">ログインしてみる</button>
-      </form>
-    </div>
-
-    <div id="main-screen" class="hidden">
-      <header>
-        <div class="group-info">
-          <div class="group-name">卒業旅行in京都 ⛩️</div>
-          <div class="member-count">メンバー 6人</div>
-        </div>
-      </header>
-
-      <div class="main-content">
-        
-        <div id="tab-shiori" class="tab-content">
-          <div class="form-card">
-            <div class="form-row">
-              <select id="new-day" style="flex: 1.2;">
-                <option value="1">1日目</option>
-                <option value="2">2日目</option>
-                <option value="3">3日目</option>
-              </select>
-              <input type="time" id="new-time" style="flex: 1.5;" required>
-              <input type="text" id="new-title" placeholder="予定のタイトル" style="flex: 2.5;" required>
-            </div>
-            <div class="form-row">
-              <input type="text" id="new-memo" placeholder="メモや詳細（場所など）">
-            </div>
-            <div class="form-row">
-              <input type="number" id="new-budget" placeholder="予算（数字のみ）">
-            </div>
-            <button type="button" class="btn-secondary" onclick="addPlan()">予定をタイムラインに追加</button>
-          </div>
-
-          <div class="section-title">旅のスケジュール</div>
-          <div id="timeline-container"></div>
-        </div>
-
-        <div id="tab-candidates" class="tab-content hidden">
-          <div class="form-card">
-            <div class="form-row">
-              <input type="text" id="new-candidate-title" placeholder="スポット名 (例: 金閣寺)" required>
-            </div>
-            <div class="form-row">
-              <input type="text" id="new-candidate-memo" placeholder="やりたいこと・メモ (例: 抹茶ソフト食べたい)">
-            </div>
-            <button type="button" class="btn-secondary" style="background-color: #3b82f6;" onclick="addCandidate()">候補リストに追加</button>
-          </div>
-
-          <div class="section-title">みんなの行きたい候補（投票順）</div>
-          <div id="candidates-container"></div>
-        </div>
-
-        <div id="tab-warikan" class="tab-content hidden">
-          <div class="section-title">現在の立て替え状況</div>
-          <div class="warikan-card">
-            <div class="warikan-row"><span>Aさん ➔ Bさん</span><span style="color: #ef4444;">¥1,200 支払う</span></div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="bottom-nav">
-        <div id="nav-shiori" class="nav-item active" onclick="switchTab('shiori')">しおり</div>
-        <div id="nav-candidates" class="nav-item" onclick="switchTab('candidates')">行きたい候補</div>
-        <div id="nav-warikan" class="nav-item" onclick="switchTab('warikan')">割り勘</div>
-      </div>
-    </div>
-
-  </div>
-
-  <script>
-    let plans = [
-      { day: "1", time: "10:00", title: "京都駅 集合", memo: "中央口改札の近くのコインロッカー前", budget: "" },
-      { day: "1", time: "11:30", title: "ランチ：手織り寿し", memo: "予約済み。各自2,000円くらい", budget: "2000" },
-      { day: "2", time: "09:00", title: "ホテル出発", memo: "チェックアウトを忘れないこと！", budget: "" }
-    ];
-
-    let candidates = [
-      { title: "伏見稲荷大社", memo: "千本鳥居で写真撮りたい！朝早めがいいかも", votes: 4 },
-      { title: "アラビカ京都 嵐山", memo: "渡月橋みながらコーヒー飲めるところ☕️", votes: 5 }
-    ];
-
-    window.onload = function() {
-      renderPlans();
-      renderCandidates();
-    };
-
-    function handleLogin(event) {
-      event.preventDefault();
-      document.getElementById('login-screen').classList.add('hidden');
-      document.getElementById('main-screen').classList.remove('hidden');
-    }
-
-    function switchTab(tabName) {
-      const contents = document.querySelectorAll('.tab-content');
-      contents.forEach(content => content.classList.add('hidden'));
-      document.getElementById(`tab-${tabName}`).classList.remove('hidden');
-
-      const navItems = document.querySelectorAll('.nav-item');
-      navItems.forEach(item => item.classList.remove('active'));
-      document.getElementById(`nav-${tabName}`).classList.add('active');
-    }
-
-    function addPlan() {
-      const dayVal = document.getElementById('new-day').value;
-      const timeVal = document.getElementById('new-time').value;
-      const titleVal = document.getElementById('new-title').value.trim();
-      const memoVal = document.getElementById('new-memo').value.trim();
-      const budgetVal = document.getElementById('new-budget').value.trim();
-
-      if (!timeVal || !titleVal) {
-        alert('「時間」と「タイトル」を入力してね！');
-        return;
-      }
-
-      plans.push({ day: dayVal, time: timeVal, title: titleVal, memo: memoVal, budget: budgetVal });
-      renderPlans();
-
-      document.getElementById('new-time').value = '';
-      document.getElementById('new-title').value = '';
-      document.getElementById('new-memo').value = '';
-      document.getElementById('new-budget').value = '';
-    }
-
-    function renderPlans() {
-      plans.sort((a, b) => {
-        if (a.day !== b.day) return Number(a.day) - Number(b.day);
-        return a.time.localeCompare(b.time);
-      });
-
-      const container = document.getElementById('timeline-container');
-      container.innerHTML = '';
-
-      let currentDay = null;
-      let currentTimelineNode = null;
-
-      plans.forEach(plan => {
-        if (plan.day !== currentDay) {
-          currentDay = plan.day;
-          const dayBlock = document.createElement('div');
-          dayBlock.className = 'day-block';
-
-          const dayHeader = document.createElement('div');
-          dayHeader.className = 'day-header';
-          dayHeader.innerText = `📆 ${currentDay}日目`;
-          dayBlock.appendChild(dayHeader);
-
-          currentTimelineNode = document.createElement('div');
-          currentTimelineNode.className = 'timeline';
-          dayBlock.appendChild(currentTimelineNode);
-
-          container.appendChild(dayBlock);
-        }
-
-        let budgetHTML = '';
-        if (plan.budget) {
-          budgetHTML = `<div class="plan-budget">予算: ¥${Number(plan.budget).toLocaleString()}</div>`;
-        }
-
-        const item = document.createElement('div');
-        item.className = 'timeline-item';
-        item.innerHTML = `
-          <div class="time">${plan.time}</div>
-          <div class="plan-card">
-            <div class="plan-title">${plan.title}</div>
-            <div class="plan-memo">${plan.memo}</div>
-            ${budgetHTML}
-          </div>
-        `;
-        currentTimelineNode.appendChild(item);
-      });
-    }
-
-    function addCandidate() {
-      const titleInput = document.getElementById('new-candidate-title');
-      const memoInput = document.getElementById('new-candidate-memo');
-
-      const titleVal = titleInput.value.trim();
-      const memoVal = memoInput.value.trim();
-
-      if (!titleVal) {
-        alert('スポット名は必ず入力してね！');
-        return;
-      }
-
-      candidates.push({ title: titleVal, memo: memoVal, votes: 0 });
-      renderCandidates();
-
-      titleInput.value = '';
-      memoInput.value = '';
-    }
-
-    function voteCandidate(index) {
-      candidates[index].votes += 1;
-      renderCandidates();
-    }
-
-    function renderCandidates() {
-      candidates.sort((a, b) => b.votes - a.votes);
-
-      const container = document.getElementById('candidates-container');
-      container.innerHTML = '';
-
-      candidates.forEach((spot, index) => {
-        const item = document.createElement('div');
-        item.className = 'candidate-item';
-        item.innerHTML = `
-          <div class="candidate-info">
-            <h4>${spot.title}</h4>
-            <p>${spot.memo || '（メモなし）'}</p>
-          </div>
-          <button type="button" class="btn-vote" onclick="voteCandidate(${index})">
-            ❤️ ${spot.votes} 票
-          </button>
-        `;
-        container.appendChild(item);
-      });
-    }
-  </script>
-</body>
-</html>
+      font-
